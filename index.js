@@ -27,7 +27,7 @@ function cryptFunction (type) {
 
     if (keys.length === 0) {
       for (let i = 0, len = Object.keys(object).length; i < len; i++) {
-        const key = isArray ? i : Object.keys(object)[i]
+        const key = isArray ? i : Object.keys(object)[i]     
 
         if (typeof object[key] !== 'undefined') {
           output[key] = object[key]
@@ -47,7 +47,8 @@ function cryptFunction (type) {
 
     for (let i = 0; i < length; i++) {
       const key = isArray ? i : keys[i]
-
+      
+      if (keys.indexOf(key) === -1)
       if (typeof object[key] !== 'undefined') {
         output[key] = object[key]
 

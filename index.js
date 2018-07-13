@@ -20,37 +20,16 @@ const encrypt = (pw, algo, enc) => (value) => {
 
 function cryptFunction (type) {
   return function (object, keys, isArray) {
-    const cryptValue = (type === 'encrypt') ? encryptValue : decryptValue
-    const cryptObject = (type === 'encrypt') ? encryptObject : decryptObject
-    const output = isArray ? object.map(e => e) : Object.assign({}, object)
-    const length = isArray ? object.length : keys.length
+    var objectKeys
+    if (!isArray) objectKeys = Object.keys(object)
+    var cryptValue = (type === 'encrypt') ? encryptValue : decryptValue
+    var cryptObject = (type === 'encrypt') ? encryptObject : decryptObject
+    var output = isArray ? [] : {}
+    var length = isArray ? object.length : objectKeys.length
 
-    if (keys.length === 0) {
-      for (let i = 0, len = Object.keys(object).length; i < len; i++) {
-        const key = isArray ? i : Object.keys(object)[i]     
-
-        if (typeof object[key] !== 'undefined') {
-          output[key] = object[key]
-          
-          if (typeof object[key] !== 'object') {
-            output[key] = cryptValue(object[key])
-          } else if (Array.isArray(object[key])) {
-            output[key] = cryptObject(object[key], keys, true)
-          } else {
-            output[key] = cryptObject(object[key], keys)
-          }
-        }
-      }
-
-      return output
-    }
-
-    for (let i = 0; i < length; i++) {
-      const key = isArray ? i : keys[i]
-      
-      if (keys.indexOf(key) !== -1 && (typeof object[key] !== 'undefined')) {
-        output[key] = object[key]
-
+    for (var i = 0; i < length; i++) {
+      var key = isArray ? i : objectKeys[i]
+      if (!keys.length || (!isArray && keys.indexOf(key) === -1)) {
         if (typeof object[key] !== 'object') {
           output[key] = cryptValue(object[key])
         } else if (Array.isArray(object[key])) {
@@ -58,6 +37,8 @@ function cryptFunction (type) {
         } else {
           output[key] = cryptObject(object[key], keys)
         }
+      } else {
+        output[key] = object[key]
       }
     }
 
